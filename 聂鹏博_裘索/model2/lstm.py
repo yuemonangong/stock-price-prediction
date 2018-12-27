@@ -6,7 +6,7 @@ from sklearn.preprocessing import LabelEncoder,MinMaxScaler
 from sklearn.metrics import mean_squared_error
 from keras.models import Sequential, load_model
 from keras.layers import Dense, Activation, Dropout
-from keras.layers import LSTM
+from keras.layers import LSTM, Conv1D, MaxPooling1D
 from keras.callbacks import EarlyStopping
 from numpy import concatenate
 from math import sqrt
@@ -174,6 +174,8 @@ def fit_network(train_X, train_Y, test_X, test_Y, predict_X):
     
     model = Sequential()
     model.add(LSTM(128, activation='tanh', input_shape=(train_X.shape[1], train_X.shape[2]), return_sequences=True))
+    model.add(Conv1D(filters=32, input_shape=(train_X.shape[1], train_X.shape[2]),kernel_size=3, padding='valid', activation='tanh'))
+    model.add(MaxPooling1D(pool_size=2))
     model.add(LSTM(128, activation='tanh'))
     model.add(Dense(60, activation = 'linear', kernel_regularizer=l2(0.001)))
     model.add(Dropout(0.5))
